@@ -4,7 +4,7 @@
 #include "Referee.h"
 
 int main() {
-    Human player1;
+    Human player1; // Default player name 'player'
     Computer player2;
     Referee referee;
 
