@@ -9,9 +9,10 @@
 #include "Ninja.h"
 #include "Zombie.h"
 
+// Constructor that initialises the players moves
 Human::Human(std::string name) : name(name) {}
 
-// Implements the makeMove function for Human
+// Implements the makeMove function for Player
 Move* Human::makeMove() {
     std::string move;
     std::cout << "Enter move: ";
@@ -30,7 +31,7 @@ Move* Human::makeMove() {
     return nullptr; // invalid move
 }
 
-// Implements the getName function for Human
+// Implements the getName function for players move
 std::string Human::getName() const {
     return name;
 }
