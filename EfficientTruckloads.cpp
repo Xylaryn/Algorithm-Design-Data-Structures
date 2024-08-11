@@ -3,7 +3,7 @@
 EfficientTruckloads::EfficientTruckloads() {
 }
 
-// Attempt of the numTrucks method with memoisation
+// numTrucks method with memoisation
 int EfficientTruckloads::numTrucks(int numCrates, int loadSize) {
     // Check if the result is already in the memo
     if (memo.find(numCrates) != memo.end() && memo[numCrates].find(loadSize) != memo[numCrates].end()) {
@@ -15,10 +15,10 @@ int EfficientTruckloads::numTrucks(int numCrates, int loadSize) {
         return memo[numCrates][loadSize] = 1;
     }
 
-    // Recursive function which divide the crates into two smaller piles
+    // Divides the crates into two smaller piles
     int half1 = numCrates / 2;
     int half2 = numCrates - half1;
 
-    // Store the result in the memo before returning it
+    // Stores the result in the memo before returning it
     return memo[numCrates][loadSize] = numTrucks(half1, loadSize) + numTrucks(half2, loadSize);
 }
