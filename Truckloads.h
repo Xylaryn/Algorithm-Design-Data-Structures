@@ -3,10 +3,8 @@
 
 class Truckloads {
 public:
-    Truckloads();
-
     // Function Signature
     int numTrucks(int numCrates, int loadSize);
 };
 
-#endif // TRUCKLOADS
+#endif // TRUCKLOADS_H
