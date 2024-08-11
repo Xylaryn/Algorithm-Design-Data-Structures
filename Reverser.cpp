@@ -1,4 +1,4 @@
-#include "reverser.h"
+#include "Reverser.h"
 #include <cmath>
 
 // Recursive method which reverses the digits of any given integer
