@@ -1,22 +1,25 @@
 #include <iostream>
 
-int numTrucks(int numItems, int truckCapacity) {
-    if (numItems <= truckCapacity) {
-        return 1;
+class Truckloads {
+public:
+    int numTrucks(int numCrates, int loadSize) {
+        if (numCrates <= loadSize) {
+            return 1;
+        }
+        
+        // Recursive case which divides the crates into two smaller piles
+        int half1 = numCrates / 2;
+        int half2 = numCrates - half1;
+        
+        // Calcs the sum of the trucks required for both piles
+        return numTrucks(half1, loadSize) + numTrucks(half2, loadSize);
     }
-
-    // Splits the number of items into two groups
-    int half1 = numItems / 2;
-    int half2 = numItems - half1;
-
-    return numTrucks(half1, truckCapacity) + numTrucks(half2, truckCapacity);
-}
+};
 
 int main() {
-    int numItems = 14;
-    int truckCapacity = 3;
-
-    std::cout << "Number of trucks needed: " << numTrucks(numItems, truckCapacity) << std::endl;
+    Truckloads tl;
+    std::cout << tl.numTrucks(14, 3) << std::endl; // Must return 6
+    std::cout << tl.numTrucks(15, 1) << std::endl; // Must return 15
+    std::cout << tl.numTrucks(1024, 5) << std::endl; // Must return 256
     return 0;
 }
-    
