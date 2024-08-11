@@ -1,34 +1,25 @@
 #include "Reverser.h"
+#include <cmath>
 
-// Function signature
+// Recursive method which reverses the digits of any given integer
 int Reverser::reverseDigit(int value) {
     if (value < 10) {
         return value;
     }
+    
+    // Gets the number of digits stored in value and stores it in new variable numDigits
+    int numDigits = static_cast<int>(std::log10(value)) + 1;
 
-    // Helper function to reverse the digits in reverse recursively
-    return reverseDigitHelper(value, 0);
+    // Gets the last digit and appends it to the front, then the recursive function sorts the remaining digits
+    return (value % 10) * static_cast<int>(std::pow(10, numDigits - 1)) + reverseDigit(value / 10);
 }
 
-int Reverser::reverseDigitHelper(int value, int reversedValue) {
-    // Base case where no digits are left to process
-    if (value == 0) {
-        return reversedValue;
-    }
-
-    // Add the last digit of 'value' to 'reversedValue'
-    reversedValue = reversedValue * 10 + (value % 10);
-
-    // Recursively calls upon the helper function to obtain the next digit
-    return reverseDigitHelper(value / 10, reversedValue);
-}
-
-// Recursive method to reverse a string
+// Recursive method to reverse string input
 std::string Reverser::reverseString(const std::string &characters) {
     if (characters.length() <= 1) {
         return characters;
     }
-
-    // Move the last character to the front, and recursively reverse the rest
+    
+    // Moves the last character to the front, and reverse the remaining chars of the entered string
     return characters.back() + reverseString(characters.substr(0, characters.length() - 1));
 }
