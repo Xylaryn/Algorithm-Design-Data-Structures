@@ -1,18 +1,17 @@
 #ifndef EFFICIENT_TRUCKLOADS_H
 #define EFFICIENT_TRUCKLOADS_H
 
-#include <unordered_map>
+#include <unordered_map> // Required for a container which stores previous values
 
 class EfficientTruckloads {
 public:
-    // Constructor
     EfficientTruckloads();
 
-    // Method to calculate the number of trucks required with memoization
+    // Function signature which calculates the number of trucks required with memoisation 
     int numTrucks(int numCrates, int loadSize);
 
 private:
-    // A map to store previously computed results (memoization)
+    // Map which stores previously computed results
     std::unordered_map<int, std::unordered_map<int, int>> memo;
 };
 
