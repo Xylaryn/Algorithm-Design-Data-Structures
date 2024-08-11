@@ -1,5 +1,4 @@
-#include <iostream>
-#include "Truckloads.h"  
+#include "Truckloads.h"
 
 // numTrucks method
 int Truckloads::numTrucks(int numCrates, int loadSize) {
@@ -11,6 +10,6 @@ int Truckloads::numTrucks(int numCrates, int loadSize) {
     int half1 = numCrates / 2;
     int half2 = numCrates - half1;
     
-    // Calcs the sum of the trucks required for both piles
+    // Calculates the sum of the trucks required for both piles
     return numTrucks(half1, loadSize) + numTrucks(half2, loadSize);
 }
