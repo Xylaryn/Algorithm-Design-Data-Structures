@@ -1,33 +1,46 @@
 #include "Finder.h"
-// Best case: the time complexity of the following optimised algorithm is O(n) given if the first
-// few prefixes are found and then a prefix is not found early leading the code to terminte the loop
-// checks early Worst case: the time complexity of the algorithm is O(n * m), where n is the length
-// of0 s2 and m is the length of s1 which only occurs when each prefix of s2 is found in s1 thus all
-// substrings are checked hurting efficiency
+#include <vector>
 
 using namespace std;
 
+// Function signature
 vector<int> Finder::findSubstrings(string s1, string s2) {
     vector<int> result;
-    string current_prefix = "";
+    int n = s1.length(); // Length of main string s1
+    int m = s2.length(); // Length of the prefix string s2
 
-    for (size_t i = 1; i <= s2.size(); i++) {
-        current_prefix += s2[i - 1];
-        size_t found = s1.find(current_prefix);
-        if (found != string::npos) {
-            result.push_back(found);
-        } else {
+    // Iterates over each prefix length of s2
+    for (int i = 1; i <= m; i++) {
+        string current_prefix = s2.substr(0, i);
+
+        // Boolean value to track whether the current prefix was found in s1
+        bool found = false;
+
+        // Iterates over all possible starting positions in s1
+        for (int j = 0; j <= n - i; ++j) {
+            if (s1.compare(j, i, current_prefix) == 0) { // Compares the substring of s1 
+            // starting at index j with the current prefix
+                result.push_back(j); // If prefix is found store its starting position
+                found = true;
+                break; // Stops search since prefix was already found
+            }
+        }
+
+        // if the current prefix was not found in s1 record -1 and terminates loop given that larger
+        // prefixes will not be found
+        if (!found) {
             result.push_back(-1);
-            break; // if the required prefix is not found, there is no need to check for larger
-                   // prefixes
+            break;
         }
     }
 
-    // Fills the remaining entries with -1 since larger prefixes will not be found by using a while
-    // loop
-    while (result.size() < s2.size()) {
+    // If the loop breaks early in the step above indicating a prefix wasn't found the remaining
+    // positions in the vector are set to -1 which indicates that no more valid prefixes exist in
+    // the string
+    while (result.size() < m) {
         result.push_back(-1);
     }
 
+    // Returns the result of the algorithm
     return result;
 }
