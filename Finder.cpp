@@ -1,31 +1,39 @@
 #include "Finder.h"
-
 using namespace std;
 
-vector<int> Finder::findSubstrings(string s1, string s2) {
+// Defines the recursive helper function
+vector<int> Finder::findSubstrings(string &s1, string &s2, int left, int right) {
+    if (left > right) {
+        return {}; // Returns empty vector
+    }
+
+    int mid = left + (right - left) / 2;
+    string prefix = s2.substr(0, mid + 1);
+
+    size_t found = s1.find(prefix);
     vector<int> result;
-    string prefix = ""; // Empty prefix
 
-    // Iterates over all chars in s2 to build prefix
-    for (size_t i = 0; i < s2.size(); i++) {
-        prefix += s2[i];                // Increment the prefix by one char
-        size_t found = s1.find(prefix); // Search for the current prefix in s1
-
-        if (found != string::npos) {
-            // If the prefix is found the starting index is stored in result
-            result.push_back(found);
-        } else {
-            // If the prefix isn't found -1 will be stored and the loop will 
-            // terminate because no larger prefix will be found
+    if (found != string::npos) {
+        // If prefix is found the index is added and the program continues the search in the right
+        // half
+        result.push_back(found);
+        vector<int> rightResult = findSubstrings(s1, s2, mid + 1, right);
+        result.insert(result.end(), rightResult.begin(), rightResult.end());
+    } else {
+        // If prefix wasn't found the loop stops and result is filled with -1
+        result.push_back(-1);
+        for (int i = mid + 1; i <= right; i++) {
             result.push_back(-1);
-            break;
         }
     }
 
-    // Fills the rest with -1 if prefix isn't found
-    while (result.size() < s2.size()) {
-        result.push_back(-1);
-    }
-
+    // Recursively search in the left half and combine the results in the vector
+    vector<int> leftResult = findSubstrings(s1, s2, left, mid - 1);
+    result.insert(result.begin(), leftResult.begin(), leftResult.end());
     return result;
+}
+
+// Defines the non-recursive version of findSubstrings
+vector<int> Finder::findSubstrings(string s1, string s2) {
+    return findSubstrings(s1, s2, 0, s2.size() - 1);
 }
