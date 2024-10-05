@@ -1,10 +1,11 @@
 #include "Autocomplete.h"
 #include <iostream>
+#include <vector> // Required for using std::vector
 using namespace std;
 
 // Helper function to display suggestions
-void printSuggestions(const vector<string>& suggestions) {
-    for (const string& suggestion : suggestions) {
+void printSuggestions(const vector<string> &suggestions) {
+    for (const string &suggestion : suggestions) {
         cout << suggestion << " ";
     }
     cout << endl;
