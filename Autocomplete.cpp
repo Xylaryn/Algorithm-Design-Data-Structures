@@ -1,4 +1,5 @@
 #include "Autocomplete.h"
+#include <unordered_map> // Required for unordered_map
 
 // TrieNode constructor
 TrieNode::TrieNode() {
@@ -12,8 +13,8 @@ Autocomplete::Autocomplete() {
 
 // Insert word into Trie function
 void Autocomplete::insert(string word) {
-    TrieNode* current = root; // Starts traversing from the root node start
-    for (char ch : word) { // Iterates of each char in the word
+    TrieNode *current = root; // Starts traversing from the root node start
+    for (char ch : word) {    // Iterates over each char in the word
         if (!current->children[ch]) {
             current->children[ch] = new TrieNode();
         }
@@ -23,27 +24,29 @@ void Autocomplete::insert(string word) {
 }
 
 // Helper function which collects words recursively
-void Autocomplete::collectWords(TrieNode* node, string prefix, vector<string>& results) {
-    if (node->isEndOfWord) { 
+void Autocomplete::collectWords(TrieNode *node, string prefix, vector<string> &results) {
+    if (node->isEndOfWord) {
         results.push_back(prefix); // Adds the current prefix to the vector results
     }
-    for (auto& child : node->children) {
+    for (auto &child : node->children) {
         collectWords(child.second, prefix + child.first, results);
     }
 }
 
 // Gets the autocomplete suggestions for the given prefix
 vector<string> Autocomplete::getSuggestions(string partialWord) {
-    TrieNode* current = root; // Starts traversing the list from the root node 
-    vector<string> suggestions; // Initialise a vector to store suggestions
+    TrieNode      *current = root; // Starts traversing the list from the root node
+    vector<string> suggestions;    // Initialise a vector to store suggestions
 
     for (char ch : partialWord) {
         if (!current->children[ch]) {
             return suggestions; // No suggestions if prefix doesn't exist
         }
-        current = current->children[ch]; // Moves the child node which corresponds to the current char 
+        current =
+            current->children[ch]; // Moves the child node which corresponds to the current char
     }
 
-    collectWords(current, partialWord, suggestions); // Collects all the words starting from the current node
-    return suggestions; // Returns the list of autofill suggestions
+    collectWords(
+        current, partialWord, suggestions); // Collects all the words starting from the current node
+    return suggestions;                     // Returns the list of autofill suggestions
 }
