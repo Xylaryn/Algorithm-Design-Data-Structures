@@ -63,6 +63,16 @@ class Heap {
         }
     
     public:
+        // Default constructor
+        Heap() = default;
+
+        // Constructor that takes a vector and builds a heap from its elements
+        Heap(const std::vector<T>& values) {
+            for (const T& value : values) {
+                insert(value);  // Insert each element to maintain the heap property
+            }
+        }
+
         // Check if the heap is empty
         bool isHeapEmpty() {
             return tree.empty();
