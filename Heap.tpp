@@ -1,7 +1,4 @@
-//
-//  Heap.cpp
-//  Heap - Implementation of a Min-Heap data structure
-//
+// Heap.tpp
 
 #ifndef Tree_hpp
 #define Tree_hpp
@@ -24,156 +21,70 @@ class Heap {
         
         // Helper functions to calculate child and parent node positions based on index
         heapIndex getLeftChildPosition(heapIndex i) {
-            // Left child is at index 2 * i
-            return (2 * i);
+            // Left child is at index 2 * i + 1 (adjusted for 0-based indexing)
+            return (2 * i + 1);
         }
         
         heapIndex getRightChildPosition(heapIndex i) {
-            // Right child is at index (2 * i) + 1
-            return (2 * i) + 1;
+            // Right child is at index (2 * i) + 2 (adjusted for 0-based indexing)
+            return (2 * i + 2);
         }
         
         heapIndex getParentPosition(heapIndex i) {
-            // Parent is at floor((i - 1) / 2) using integer division
-            return (heapIndex) std::floor(i / 2);
+            // Parent is at (i - 1) / 2 using integer division
+            return (i - 1) / 2;
         }
         
         // Function to maintain the min-heap property by swapping elements down the tree
         heapIndex heapifyDown(heapIndex index) {
             heapIndex leftChildIndex = this->getLeftChildPosition(index);
-            T leftChild = (leftChildIndex < this->tree.size())? this->tree.at(leftChildIndex) : std::numeric_limits<T>::min();
+            T leftChild = (leftChildIndex < this->tree.size()) ? this->tree.at(leftChildIndex) : std::numeric_limits<T>::max();
             
             heapIndex rightChildIndex = this->getRightChildPosition(index);
-            T rightChild = (rightChildIndex < this->tree.size())? this->tree.at(rightChildIndex) : std::numeric_limits<T>::min();
+            T rightChild = (rightChildIndex < this->tree.size()) ? this->tree.at(rightChildIndex) : std::numeric_limits<T>::max();
             
-            // Find the child with the larger value
-            heapIndex minValueChildIndex = (leftChild < rightChild)? leftChildIndex: rightChildIndex;
+            // Find the child with the smaller value
+            heapIndex minValueChildIndex = (leftChild < rightChild) ? leftChildIndex : rightChildIndex;
             
-            // If a child has a larger value, swap it with the parent and recursively heapify down
-            if(minValueChildIndex < this->tree.size()){
-                if(this->tree.at(minValueChildIndex) < this->tree.at(index)) {
-                    std::cout << "Swap positions " << minValueChildIndex << "(" << this->tree.at(minValueChildIndex) << ") and" << index << "(" << this->tree.at(index) << ")." << std::endl;
-                    std::swap(this->tree.at(minValueChildIndex), this->tree.at(index));
-                    // Recursively fix the heap property
-                    this->heapifyDown(minValueChildIndex);
-                    return minValueChildIndex;
-                }
+            // If a child has a smaller value, swap it with the parent and recursively heapify down
+            if (minValueChildIndex < this->tree.size() && this->tree[minValueChildIndex] < this->tree[index]) {
+                std::swap(this->tree[minValueChildIndex], this->tree[index]);
+                return heapifyDown(minValueChildIndex);
             }
-            // Reached a leaf node or no child has a larger value, return the current index
-            return this->tree.size();
+            return index;
         }
+
+        // Function to restore the min-heap property by moving elements up the tree
+        void heapifyUp(heapIndex index) {
+            while (index > 0 && tree[index] < tree[getParentPosition(index)]) {
+                std::swap(tree[index], tree[getParentPosition(index)]);
+                index = getParentPosition(index);
+            }
+        }
+    
     public:
-        // Default constructor - creates an empty heap with a dummy element at index 0
-        Heap() {
-            this->tree.push_back((T) NULL);
-        }
-        
-        // Constructor that builds a min-heap from an existing vector
-        Heap(std::vector<T> tree) {
-            this->heapify(tree);
-        }
-        
         // Check if the heap is empty
         bool isHeapEmpty() {
-            return this->tree.size() <= 1;
-        }
-        
-        // Print the contents of the heap
-        void printHeap() {
-            this->printVector(this->tree);
-        }
-        
-        // Build a min-heap from an existing vector
-        void heapify(std::vector<T> tree) {
-            // Insert a dummy element at the beginning to simplify calculations
-            tree.insert(tree.begin(), (T) NULL);
-            
-            this->tree = tree;
-            
-            // Start from the last non-dummy element and work backwards to maintain the heap property
-            for(heapIndex index = this->tree.size() - 1; index >= 1; index--) {
-                this->heapifyDown(index);
-            }
-        }
-        
-        // Helper function to print the contents of a vector
-        void printVector(std::vector<T> numVector) {
-            std::cout << "[ ";
-            for(heapIndex index = 0; index < numVector.size(); index++) {
-                // Print only non-dummy elements
-                if(numVector.at(index) != (T) NULL) {
-                    std::cout << numVector.at(index);
-                    if(index != (numVector.size() - 1)) {
-                        std::cout << ", ";
-                    }
-                }
-            }
-            std:: cout << " ]" << std::endl;
-        }
-        
-        // Remove the minimum element from the heap
-        T popTop() {
-            if(this->isHeapEmpty()) {
-                // Return a minimum value if the heap is empty
-                return std::numeric_limits<T>::min();
-            }
-            const heapIndex ROOT_INDEX = 1;
-            
-            // Replace the root with the last element
-            T topElement = this->tree.at(ROOT_INDEX);
-            std::cout << "Removed top element: " << topElement << std::endl;
-            std::cout << "Placing index: " << (this->tree.size() - 1) << "(" << this->tree.at(this->tree.size() - 1) << ") to the top" << std::endl;
-            this->tree.at(ROOT_INDEX) = this->tree.at(this->tree.size() - 1);
-            this->tree.pop_back();
-            
-            std::cout << "Checking the if the heap condition is valid after popping out top of heap: " << topElement << std::endl;
-            // Restore the heap property by heapifying down from the root
-            heapIndex parent = ROOT_INDEX;
-            this->heapifyDown(parent);
-            return topElement;
-        }
-        
-        // Sort a vector using the heap sort algorithm
-        std::vector<T> heapSort(std::vector<T> numList) {
-            Heap<T> tree1;
-            // Build a min-heap from the input vector
-            for(typename std::vector<T>::size_type index = 0; index < numList.size(); index++) {
-                tree1.insert(numList[index]);
-            }
-            
-            std::vector<T> sortedNumList;
-            // Extract the minimum elements one by one and add them to the sorted list
-            while(!tree1.isHeapEmpty()){
-                sortedNumList.push_back(tree1.popTop());
-                this->printVector(sortedNumList);
-            }
-            return sortedNumList;
+            return tree.empty();
         }
         
         // Insert an element into the heap
         void insert(T element) {
             tree.push_back(element); // Adds the new element at the end
-            heapIndex index = tree.size() - 1; // Gets the index of the newly added element
-
-            // Restores min-heap
-            while (index > 1 && tree[index] < tree[getParentPosition(index)]) {
-                std::swap(tree[index], tree[getParentPosition(index)]);
-                index = getParentPosition(index); // Moves element to parent position
-            }
-
+            heapifyUp(tree.size() - 1); // Restores min-heap property
         }
-        
+
         // Remove an element from the heap
         void remove(T value) {
             // Find the value within the heap
-            heapIndex indexToRemove = 0l
-            for (heapIndex i = 1; i < tree.size(); ++i) {
+            heapIndex indexToRemove = 0; // Fixed missing semicolon
+            for (heapIndex i = 0; i < tree.size(); ++i) { 
                 if (tree[i] == value) {
                     indexToRemove = i;
                     break;
                 }
             }
-            if (indexToRemove == 0) return; // If value isnt found
+            if (indexToRemove == tree.size()) return; // If value isn't found
 
             // Swaps with the last element and remove from the tree
             std::swap(tree[indexToRemove], tree.back());
@@ -182,18 +93,17 @@ class Heap {
             // Restores min-heap
             if (indexToRemove < tree.size()) {
                 heapifyDown(indexToRemove);
-                heapifyUp(indexToRemove)
+                heapifyUp(indexToRemove);
             }
         }
-        
+
         // Get the minimum element (in this case, the minimum element of the min-heap)
         T getMin() {
-            if (tree.size() > 1) {
-                return tree[1]; // Returns the root which should be the min element
+            if (tree.size() > 0) {
+                return tree[0]; // Returns the root which should be the min element
             }
             throw std::out_of_range("Heap is empty");
         }
 };
 
 #endif /* Tree_hpp */
-
